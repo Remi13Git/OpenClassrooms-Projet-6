@@ -3,6 +3,7 @@ const path = require('path');
 const Book = require('../models/Book');
 const mongoose = require('mongoose');
 
+//Fonction pour récupérer l'ensemble des livres
 const getBooks = async (req, res) => {
   try {
     const books = await Book.find({});
@@ -24,9 +25,7 @@ const getBooks = async (req, res) => {
   }
 };
 
-
-
-
+//Fonction pour récupérer un livre via son ID
 const getBookById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -45,11 +44,11 @@ const getBookById = async (req, res) => {
   }
 };
 
-
+//Fonction pour créer un livre
 const createBook = async (req, res) => {
   console.log('Request body:', req.body);
 
-  // Vérifiez si req.body.book existe
+  // Vérifier si req.body.book existe
   if (!req.body.book) {
     return res.status(400).json({ message: 'Bad Request: Missing book data' });
   }
@@ -60,7 +59,7 @@ const createBook = async (req, res) => {
 
   console.log('Book data:', { userId, title, author, year, genre, ratings, averageRating });
 
-  // Vérifiez si req.file existe avant d'accéder à req.file.filename
+  // Vérifier si req.file existe avant d'accéder à req.file.filename
   const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
   const book = new Book({
@@ -76,15 +75,14 @@ const createBook = async (req, res) => {
 
   try {
     const createdBook = await book.save();
-    res.status(201).json(createdBook); // Assurez-vous de renvoyer la réponse avec le statut 201
+    res.status(201).json(createdBook);
   } catch (error) {
     console.error('Error creating book:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
 
-
-
+//Fonction pour noter un livre
 const deleteBook = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -121,7 +119,7 @@ const deleteBook = async (req, res) => {
   }
 };
 
-
+//Fonction pour récupérer les meilleurs livres
 const getBestRatedBooks = async (req, res) => {
   try {
     const bestRatedBooks = await Book.aggregate([
@@ -140,10 +138,7 @@ const getBestRatedBooks = async (req, res) => {
   }
 };
 
-
-
-  
-
+//Fonction pour modifier un livre
 const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
@@ -190,8 +185,7 @@ const updateBook = async (req, res) => {
   }
 };
 
-  
-
+//Fonction pour noter un livre
 const rateBook = async (req, res) => {
   try {
     const { userId, rating } = req.body;
@@ -224,7 +218,5 @@ const rateBook = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-  
 
 module.exports = { getBooks, getBookById, createBook, deleteBook, getBestRatedBooks, updateBook, rateBook };
